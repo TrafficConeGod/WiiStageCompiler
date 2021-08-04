@@ -3,16 +3,16 @@
 #include <map>
 #include <Property.h>
 
-class Type {
+class UserType {
     private:
-        std::vector<Type*> parentTypes;
-        size_t parentTypesOffset;
+        std::vector<UserType*> parentUserTypes;
+        size_t parentUserTypesOffset;
         std::map<std::string, Property*> properties;
     public:
         std::string name;
         size_t id;
 
-        Type(size_t id, std::map<std::string, Type*>& types, const std::vector<std::string>& csvLine);
+        UserType(size_t id, std::map<std::string, UserType*>& userTypes, const std::vector<std::string>& csvLine);
 
         size_t GetPropertiesSize();
         Property* GetProperty(const std::string& name);

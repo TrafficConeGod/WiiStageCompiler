@@ -1,6 +1,6 @@
 #pragma once
 
 struct Property {
-    std::string typeName;
+    std::string userTypeName;
     size_t id;
 };

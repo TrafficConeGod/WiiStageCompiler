@@ -1,5 +1,5 @@
 #include "parse.h"
-#include "Type.h"
+#include "UserType.h"
 #include <fstream>
 #include <map>
 #include <iostream>
@@ -9,24 +9,24 @@ int main(int argCount, char** args) {
         puts("Not enough args");
         return 1;
     }
-    std::string typesPath(args[1]);
+    std::string userTypesPath(args[1]);
     // std::string inputPath(args[2]);
     // std::string outputPath(args[3]);
 
-    std::ifstream typesFile(typesPath);
-    std::vector<std::vector<std::string>> typesLines(ParseCsv(typesFile));
+    std::ifstream userTypesFile(userTypesPath);
+    std::vector<std::vector<std::string>> userTypesLines(ParseCsv(userTypesFile));
 
-    std::map<std::string, Type*> types;
+    std::map<std::string, UserType*> userTypes;
     size_t i = 1;
-    for (auto line : typesLines) {
-        Type* type = new Type(i, types, line);
-        types[type->name] = type;
+    for (auto line : userTypesLines) {
+        UserType* userType = new UserType(i, userTypes, line);
+        userTypes[userType->name] = userType;
         i++;
     }
 
-    for (auto [_, type] : types) {
-        std::cout << type->name << " ";
-        Property* property = type->GetProperty("Image");
+    for (auto [_, userType] : userTypes) {
+        std::cout << userType->name << " ";
+        Property* property = userType->GetProperty("Image");
         if (property != nullptr) {
             std::cout << property->id;
         }
