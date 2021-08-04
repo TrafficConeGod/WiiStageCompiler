@@ -1,5 +1,4 @@
 #include "parse.h"
-#include <iostream>
 
 std::vector<std::vector<std::string>> ParseCsv(std::ifstream& file) {
     std::vector<std::vector<std::string>> lines;
@@ -11,9 +10,12 @@ std::vector<std::vector<std::string>> ParseCsv(std::ifstream& file) {
             {
                 char ch = lineStr[i];
                 if (ch == '"') {
+                    sectionStartPos++;
+                    i++;
                     for (;i < lineStr.size(); i++) {
                         char checkCh = lineStr[i];
                         if (checkCh == '"') {
+                            i++;
                             break;
                         }
                     }
@@ -21,10 +23,17 @@ std::vector<std::vector<std::string>> ParseCsv(std::ifstream& file) {
             }
             char ch = lineStr[i];
             if (ch == ',') {
-                lineStr[i] = '\0';
-                const char* section = &lineStr[sectionStartPos];
-                line.push_back(section);
-                lineStr[i] = ',';
+                if (lineStr[i - 1] == '"') {
+                    lineStr[i - 1] = '\0';
+                    const char* section = &lineStr[sectionStartPos];
+                    line.push_back(section);
+                    lineStr[i - 1] = '"';
+                } else {
+                    lineStr[i] = '\0';
+                    const char* section = &lineStr[sectionStartPos];
+                    line.push_back(section);
+                    lineStr[i] = ',';
+                }
                 
                 sectionStartPos = i + 1;
             }
