@@ -8,16 +8,11 @@ class DataStream {
         template<typename T>
         inline T* PtrAtPos();
     public:
-        void* buf;
-        size_t size;
-
-        DataStream(void* buf, size_t size);
+        void* buf = nullptr;
+        size_t size = 0;
 
         template<typename T>
-        inline DataStream& operator<<(const T& val);
-
-        template<typename T>
-        inline DataStream& operator>>(T& val);
+        DataStream& operator<<(const T& val);
 
         inline bool IsReadable();
 };
