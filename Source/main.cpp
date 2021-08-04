@@ -3,6 +3,9 @@
 #include <fstream>
 #include <map>
 #include <iostream>
+#include "Type.h"
+
+std::map<std::string, Type*> types;
 
 int main(int argCount, char** args) {
     if (argCount < 4) {
