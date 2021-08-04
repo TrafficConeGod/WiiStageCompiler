@@ -1,6 +1,7 @@
 #pragma once
+#include "Type.h"
 
 struct Property {
-    std::string userTypeName;
+    Type* type;
     size_t id;
 };

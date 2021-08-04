@@ -1,4 +1,5 @@
 #include "UserType.h"
+#include "Type.h"
 
 UserType::UserType(size_t _id, std::map<std::string, UserType*>& userTypes, const std::vector<std::string>& line) : id{_id}, name{line.at(0)} {
     std::string parentUserTypesSection(line.at(1));
@@ -40,8 +41,12 @@ UserType::UserType(size_t _id, std::map<std::string, UserType*>& userTypes, cons
                 char ch = section[j];
                 if (ch == ' ') {
                     section[j] = '\0';
-                    const char* userTypeName = &section[0];
-                    property->userTypeName = userTypeName;
+                    std::string typeName(&section[0]);
+                    if (!types.count(typeName)) {
+                        std::cout << "Invalid type: " << typeName << "\n";
+                        exit(1);
+                    }
+                    property->type = types[typeName];
                     section[j] = ' ';
 
                     const char* name = &section.at(j + 1);
