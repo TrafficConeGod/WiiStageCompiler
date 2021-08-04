@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include <map>
-#include <Property.h>
+#include "Property.h"
 
 class UserType {
     private:
