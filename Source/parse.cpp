@@ -5,7 +5,34 @@ std::vector<std::vector<std::string>> ParseCsv(std::ifstream& file) {
     std::vector<std::vector<std::string>> lines;
     std::string lineStr;
     while (std::getline(file, lineStr)) {
-        std::cout << lineStr << "\n";
+        std::vector<std::string> line;
+        size_t lineStartPos = 0;
+        for (size_t i = 0; i < lineStr.size(); i++) {
+            {
+                char ch = lineStr[i];
+                if (ch == '"') {
+                    for (;i < lineStr.size(); i++) {
+                        char checkCh = lineStr[i];
+                        if (checkCh == '"') {
+                            break;
+                        }
+                    }
+                }
+            }
+            char ch = lineStr[i];
+            if (ch == ',') {
+                lineStr[i] = '\0';
+                const char* section = &lineStr[lineStartPos];
+                line.push_back(section);
+                lineStr[i] = ',';
+                
+                lineStartPos = i + 1;
+            }
+        }
+        const char* section = &lineStr[lineStartPos];
+        line.push_back(section);
+
+        lines.push_back(line);
     }
     return lines;
 }
