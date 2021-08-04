@@ -1,7 +1,6 @@
 #include "Type.h"
-#include <iostream>
 
-Type::Type(ushort _id, std::map<std::string, Type*>& types, const std::vector<std::string>& line) : id{_id}, name{line.at(0)} {
+Type::Type(size_t _id, std::map<std::string, Type*>& types, const std::vector<std::string>& line) : id{_id}, name{line.at(0)} {
     std::string parentTypesSection(line.at(1));
     if (parentTypesSection.size()) {
         std::vector<std::string> parentTypeNames;
@@ -27,6 +26,7 @@ Type::Type(ushort _id, std::map<std::string, Type*>& types, const std::vector<st
         for (auto name : parentTypeNames) {
             if (types.count(name)) {
                 parentTypes.push_back(types[name]);
+                parentTypesOffset += types[name]->GetPropertiesSize();
             }
         }
     }
@@ -36,4 +36,22 @@ Type::Type(ushort _id, std::map<std::string, Type*>& types, const std::vector<st
             properties[line[i]] = i - 2;
         }
     }
+}
+
+size_t Type::GetPropertiesSize() {
+    return properties.size() + parentTypesOffset;
+}
+
+int Type::GetPropertyId(const std::string& name) {
+    if (properties.count(name)) {
+        return properties[name] + parentTypesOffset;
+    } else {
+        for (auto type : parentTypes) {
+            int id = type->GetPropertyId(name);
+            if (id != -1) {
+                return id;
+            }
+        }
+    }
+    return -1;
 }

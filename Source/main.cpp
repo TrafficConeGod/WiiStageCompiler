@@ -17,14 +17,14 @@ int main(int argCount, char** args) {
     std::vector<std::vector<std::string>> typesLines(ParseCsv(typesFile));
 
     std::map<std::string, Type*> types;
-    ushort i = 1;
+    size_t i = 1;
     for (auto line : typesLines) {
         Type* type = new Type(i, types, line);
         types[type->name] = type;
         i++;
     }
 
-    for (auto [name, type] : types) {
-        std::cout << type->id << " " << type->name << "\n";
+    for (auto [_, type] : types) {
+        std::cout << type->name << " " << type->GetPropertyId("Velocity") << "\n";
     }
 }

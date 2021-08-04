@@ -5,12 +5,14 @@
 class Type {
     private:
         std::vector<Type*> parentTypes;
-        std::map<std::string, ushort> properties;
+        size_t parentTypesOffset;
+        std::map<std::string, size_t> properties;
     public:
         std::string name;
-        ushort id;
+        size_t id;
 
-        Type(ushort id, std::map<std::string, Type*>& types, const std::vector<std::string>& csvLine);
+        Type(size_t id, std::map<std::string, Type*>& types, const std::vector<std::string>& csvLine);
 
-        ushort GetPropertyId(std::string name);
+        size_t GetPropertiesSize();
+        int GetPropertyId(const std::string& name);
 };
