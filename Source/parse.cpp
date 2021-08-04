@@ -6,7 +6,7 @@ std::vector<std::vector<std::string>> ParseCsv(std::ifstream& file) {
     std::string lineStr;
     while (std::getline(file, lineStr)) {
         std::vector<std::string> line;
-        size_t lineStartPos = 0;
+        size_t sectionStartPos = 0;
         for (size_t i = 0; i < lineStr.size(); i++) {
             {
                 char ch = lineStr[i];
@@ -22,14 +22,14 @@ std::vector<std::vector<std::string>> ParseCsv(std::ifstream& file) {
             char ch = lineStr[i];
             if (ch == ',') {
                 lineStr[i] = '\0';
-                const char* section = &lineStr[lineStartPos];
+                const char* section = &lineStr[sectionStartPos];
                 line.push_back(section);
                 lineStr[i] = ',';
                 
-                lineStartPos = i + 1;
+                sectionStartPos = i + 1;
             }
         }
-        const char* section = &lineStr[lineStartPos];
+        const char* section = &lineStr[sectionStartPos];
         line.push_back(section);
 
         lines.push_back(line);
