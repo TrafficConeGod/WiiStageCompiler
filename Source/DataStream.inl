@@ -8,7 +8,8 @@ T* DataStream::PtrAtPos() {
 
 template<typename T>
 DataStream& DataStream::operator<<(const T& val) {
-    buf = realloc(buf, size + sizeof(T));
+    size += sizeof(T);
+    buf = realloc(buf, size);
     T* ptr = PtrAtPos<T>();
     *ptr = val;
     pos += sizeof(T);

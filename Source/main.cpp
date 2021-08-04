@@ -15,9 +15,12 @@ int main(int argCount, char** args) {
     }
     std::string userTypesPath(args[1]);
     std::string stageInputPath(args[2]);
-    // std::string outputPath(args[3]);
+    std::string stageOutputPath(args[3]);
 
     std::ifstream userTypesFile(userTypesPath);
+    std::ifstream stageInputFile(stageInputPath);
+    std::ofstream stageOutputFile(stageOutputPath);
+
     std::vector<std::vector<std::string>> userTypesLines(ParseCsv(userTypesFile));
 
     std::map<std::string, UserType*> userTypes;
@@ -37,7 +40,6 @@ int main(int argCount, char** args) {
         std::cout << "\n";
     }
 
-    std::ifstream stageInputFile(stageInputPath);
     std::vector<std::vector<std::string>> stageLines(ParseCsv(stageInputFile));
 
     DataStream stageOutputStream;
@@ -82,4 +84,6 @@ int main(int argCount, char** args) {
             propertyValue.property->type->Save(stageOutputStream, propertyValue.value);
         }
     }
+
+    stageOutputFile.write((const char*)(stageOutputStream.buf), stageOutputStream.size);
 }
