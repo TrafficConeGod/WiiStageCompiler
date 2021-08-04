@@ -31,15 +31,6 @@ int main(int argCount, char** args) {
         i++;
     }
 
-    for (auto [_, userType] : userTypes) {
-        std::cout << userType->name << " ";
-        Property* property = userType->GetProperty("Image");
-        if (property != nullptr) {
-            std::cout << property->id;
-        }
-        std::cout << "\n";
-    }
-
     std::vector<std::vector<std::string>> stageLines(ParseCsv(stageInputFile));
     DataStream stageOutputStream;
 
