@@ -41,8 +41,8 @@ int main(int argCount, char** args) {
     }
 
     std::vector<std::vector<std::string>> stageLines(ParseCsv(stageInputFile));
-
     DataStream stageOutputStream;
+
     for (auto line : stageLines) {
         std::string userTypeName(line.at(0));
         if (!userTypes.count(userTypeName)) {
@@ -50,6 +50,8 @@ int main(int argCount, char** args) {
             return 1;
         }
         UserType* userType = userTypes[userTypeName];
+
+        stageOutputStream << (ushort)userType->id;
 
         struct PropertyValue {
             Property* property;
