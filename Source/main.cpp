@@ -25,6 +25,11 @@ int main(int argCount, char** args) {
     }
 
     for (auto [_, type] : types) {
-        std::cout << type->name << " " << type->GetPropertyId("Velocity") << "\n";
+        std::cout << type->name << " ";
+        Property* property = type->GetProperty("Image");
+        if (property != nullptr) {
+            std::cout << property->id;
+        }
+        std::cout << "\n";
     }
 }

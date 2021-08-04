@@ -32,8 +32,23 @@ Type::Type(size_t _id, std::map<std::string, Type*>& types, const std::vector<st
     }
 
     for (size_t i = 2; i < line.size(); i++) {
-        if (line[i].size()) {
-            properties[line[i]] = i - 2;
+        std::string section(line[i]);
+        if (section.size()) {
+            Property* property = new Property;
+            property->id = (i - 2) + parentTypesOffset;
+            for (size_t j = 0; j < section.size(); j++) {
+                char ch = section[j];
+                if (ch == ' ') {
+                    section[j] = '\0';
+                    const char* typeName = &section[0];
+                    property->typeName = typeName;
+                    section[j] = ' ';
+
+                    const char* name = &section.at(j + 1);
+                    properties[name] = property;
+                    break;
+                }
+            }
         }
     }
 }
@@ -42,16 +57,16 @@ size_t Type::GetPropertiesSize() {
     return properties.size() + parentTypesOffset;
 }
 
-int Type::GetPropertyId(const std::string& name) {
+Property* Type::GetProperty(const std::string& name) {
     if (properties.count(name)) {
-        return properties[name] + parentTypesOffset;
+        return properties[name];
     } else {
         for (auto type : parentTypes) {
-            int id = type->GetPropertyId(name);
-            if (id != -1) {
-                return id;
+            Property* property = type->GetProperty(name);
+            if (property != nullptr) {
+                return property;
             }
         }
     }
-    return -1;
+    return nullptr;
 }
