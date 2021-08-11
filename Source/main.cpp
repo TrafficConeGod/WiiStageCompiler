@@ -60,6 +60,8 @@ int main(int argCount, char** args) {
         if (colonPos != 0) {
             std::string labelName(&name[colonPos]);
             labelNames[labelName] = index;
+        } else {
+            userTypeName = name;
         }
         if (!userTypes.count(userTypeName)) {
             std::cout << "Invalid user type " << userTypeName << "\n";

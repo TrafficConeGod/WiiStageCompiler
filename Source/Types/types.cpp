@@ -41,6 +41,13 @@ void ActorSave(DataStream& stream, std::string str) {
     stream << index;
 }
 
+void StringSave(DataStream& stream, std::string str) {
+    for (size_t i = 0; i < str.size(); i++) {
+        stream << str[i];
+    }
+    stream << '\0';
+}
+
 Type* LongType = Type::Create("Long", NumberSave<long>);
 Type* ULongType = Type::Create("ULong", NumberSave<ulong>);
 Type* IntType = Type::Create("Int", NumberSave<int>);
@@ -55,5 +62,7 @@ Type* DoubleType = Type::Create("Double", NumberSave<double>);
 
 Type* Vector2FloatType = Type::Create("Vector2Float", Vector2Save<float>);
 Type* Vector2IntType = Type::Create("Vector2Int", Vector2Save<int>);
+
+Type* StringType = Type::Create("String", StringSave);
 
 Type* ActorType = Type::Create("Actor", ActorSave);
