@@ -37,7 +37,7 @@ void ActorSave(DataStream& stream, std::string str) {
         std::cout << "No actor with label: " << str << "\n";
         exit(1);
     }
-    size_t index = labelNames[str];
+    uint index = labelNames[str];
     stream << index;
 }
 
