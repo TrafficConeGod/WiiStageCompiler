@@ -1,4 +1,5 @@
 #include "types.h"
+#include "UserType.h"
 #include <sstream>
 
 template<typename T>
@@ -31,6 +32,15 @@ void Vector2Save(DataStream& stream, std::string str) {
     NumberSave<T>(stream, yStr);
 }
 
+void ActorSave(DataStream& stream, std::string str) {
+    if (!labelNames.count(str)) {
+        std::cout << "No actor with label: " << str << "\n";
+        exit(1);
+    }
+    size_t index = labelNames[str];
+    stream << index;
+}
+
 Type* LongType = Type::Create("Long", NumberSave<long>);
 Type* ULongType = Type::Create("ULong", NumberSave<ulong>);
 Type* IntType = Type::Create("Int", NumberSave<int>);
@@ -45,3 +55,5 @@ Type* DoubleType = Type::Create("Double", NumberSave<double>);
 
 Type* Vector2FloatType = Type::Create("Vector2Float", Vector2Save<float>);
 Type* Vector2IntType = Type::Create("Vector2Int", Vector2Save<int>);
+
+Type* ActorType = Type::Create("Actor", ActorSave);

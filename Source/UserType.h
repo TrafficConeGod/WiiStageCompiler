@@ -17,3 +17,5 @@ class UserType {
         size_t GetPropertiesSize();
         Property* GetProperty(const std::string& name);
 };
+
+extern std::map<std::string, size_t> labelNames;

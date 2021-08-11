@@ -8,6 +8,7 @@
 #include "Type.h"
 
 std::map<std::string, Type*> types;
+std::map<std::string, size_t> labelNames;
 
 int main(int argCount, char** args) {
     if (argCount < 4) {
@@ -40,8 +41,26 @@ int main(int argCount, char** args) {
     std::vector<std::vector<std::string>> stageLines(ParseCsv(stageInputFile));
     DataStream stageOutputStream;
 
+    size_t index = 0;
     for (auto line : stageLines) {
-        std::string userTypeName(line.at(0));
+        std::string name(line.at(0));
+        std::string userTypeName;
+        size_t colonPos = 0;
+        for (size_t i = 0; i < name.size(); i++) {
+            char ch = name[i];
+            if (ch == ':') {
+                name[i] = '\0';
+                userTypeName = &name[0];
+                name[i] = ':';
+                colonPos = i + 1;
+            } else if (ch == ' ') {
+                colonPos++;
+            }
+        }
+        if (colonPos != 0) {
+            std::string labelName(&name[colonPos]);
+            labelNames[labelName] = index;
+        }
         if (!userTypes.count(userTypeName)) {
             std::cout << "Invalid user type " << userTypeName << "\n";
             return 1;
@@ -82,6 +101,7 @@ int main(int argCount, char** args) {
             }
             propertyValue.property->type->Save(stageOutputStream, propertyValue.value);
         }
+        index++;
     }
 
     if (compileToCpp) {
