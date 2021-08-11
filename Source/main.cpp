@@ -98,7 +98,7 @@ int main(int argCount, char** args) {
         for (size_t i = 0; i < propertyValues.size(); i++) {
             const PropertyValue& propertyValue = propertyValues[i];
             if (propertyValue.property->id != i) {
-                std::cout << "Missing property" << "\n";
+                std::cout << "Missing property with id " << propertyValue.property->id << " and value " << propertyValue.value << "\n";
                 return 1;
             }
             propertyValue.property->type->Save(stageOutputStream, propertyValue.value);
