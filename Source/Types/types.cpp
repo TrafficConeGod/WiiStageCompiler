@@ -35,7 +35,7 @@ void Vector2Save(DataStream& stream, std::string str) {
 void ActorSave(DataStream& stream, std::string str) {
     if (!labelNames.count(str)) {
         std::cout << "No actor with label: " << str << "\n";
-        exit(1);
+        exit(0);
     }
     uint index = labelNames[str];
     stream << index;
@@ -62,6 +62,7 @@ Type* DoubleType = Type::Create("Double", NumberSave<double>);
 
 Type* Vector2FloatType = Type::Create("Vector2Float", Vector2Save<float>);
 Type* Vector2IntType = Type::Create("Vector2Int", Vector2Save<int>);
+Type* Vector2UIntType = Type::Create("Vector2UInt", Vector2Save<uint>);
 
 Type* StringType = Type::Create("String", StringSave);
 

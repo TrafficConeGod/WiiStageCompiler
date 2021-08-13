@@ -6,11 +6,13 @@
 class UserType {
     private:
         std::vector<UserType*> parentUserTypes;
-        size_t parentUserTypesOffset;
+        size_t parentUserTypesOffset = 0;
         std::map<std::string, Property*> properties;
+
+        void CreateEnumProperty(Property* property, std::string section);
     public:
         std::string name;
-        size_t id;
+        size_t id = 0;
 
         UserType(size_t id, std::map<std::string, UserType*>& userTypes, const std::vector<std::string>& csvLine);
 

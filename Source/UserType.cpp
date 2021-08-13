@@ -1,6 +1,50 @@
 #include "UserType.h"
 #include "Type.h"
 
+void UserType::CreateEnumProperty(Property* property, std::string section) {
+    std::map<std::string, size_t> values;
+    size_t valueStartPos = 5;
+    size_t currentValueId = 0;
+    for (size_t i = 5; i < section.size(); i++) {
+        char ch = section[i];
+        if (ch == ' ' && section.at(i - 1) != ',') {
+            const char* name = &section[valueStartPos];
+            values[name] = currentValueId;
+            currentValueId++;
+            section[i] = ',';
+
+            valueStartPos = i + 1;
+            break;
+        } else if (ch == ' ') {
+            valueStartPos++;
+            continue;
+        }
+        if (ch == ',') {
+            const char* name = &section[valueStartPos];
+            values[name] = currentValueId;
+            currentValueId++;
+            section[i] = ',';
+            
+            valueStartPos = i + 1;
+        }
+    }
+    Type* type = new Type;
+    type->Save = [values](DataStream& stream, std::string str) {
+        if (values.count(str)) {
+            uint valueId = values.at(str);
+            std::cout << valueId << "\n";
+            stream << valueId;
+        } else {
+            std::cout << "Invalid enum value " << str << "\n";
+            exit(0);
+        }
+    };
+    property->type = type;
+
+    std::string name(&section[valueStartPos]);
+    properties[name] = property;
+}
+
 UserType::UserType(size_t _id, std::map<std::string, UserType*>& userTypes, const std::vector<std::string>& line) : id{_id}, name{line.at(0)} {
     std::string parentUserTypesSection(line.at(1));
     if (parentUserTypesSection.size()) {
@@ -28,6 +72,8 @@ UserType::UserType(size_t _id, std::map<std::string, UserType*>& userTypes, cons
             if (userTypes.count(name)) {
                 parentUserTypes.push_back(userTypes[name]);
                 parentUserTypesOffset += userTypes[name]->GetPropertiesSize();
+            } else {
+                std::cout << "Invalid parent type " << name << "\n";
             }
         }
     }
@@ -42,9 +88,12 @@ UserType::UserType(size_t _id, std::map<std::string, UserType*>& userTypes, cons
                 if (ch == ' ') {
                     section[j] = '\0';
                     std::string typeName(&section[0]);
-                    if (!types.count(typeName)) {
+                    if (typeName == "Enum") {
+                        CreateEnumProperty(property, section);
+                        break;
+                    } else if (!types.count(typeName)) {
                         std::cout << "Invalid type: " << typeName << "\n";
-                        exit(1);
+                        exit(0);
                     }
                     property->type = types[typeName];
                     section[j] = ' ';

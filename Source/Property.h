@@ -2,6 +2,6 @@
 #include "Type.h"
 
 struct Property {
-    Type* type;
-    size_t id;
+    Type* type = nullptr;
+    size_t id = 0;
 };
