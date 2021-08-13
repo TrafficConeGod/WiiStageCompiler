@@ -8,6 +8,7 @@ void UserType::CreateEnumProperty(Property* property, std::string section) {
     for (size_t i = 5; i < section.size(); i++) {
         char ch = section[i];
         if (ch == ' ' && section.at(i - 1) != ',') {
+            section[i] = '\0';
             const char* name = &section[valueStartPos];
             values[name] = currentValueId;
             currentValueId++;
@@ -20,6 +21,7 @@ void UserType::CreateEnumProperty(Property* property, std::string section) {
             continue;
         }
         if (ch == ',') {
+            section[i] = '\0';
             const char* name = &section[valueStartPos];
             values[name] = currentValueId;
             currentValueId++;
@@ -32,7 +34,6 @@ void UserType::CreateEnumProperty(Property* property, std::string section) {
     type->Save = [values](DataStream& stream, std::string str) {
         if (values.count(str)) {
             uint valueId = values.at(str);
-            std::cout << valueId << "\n";
             stream << valueId;
         } else {
             std::cout << "Invalid enum value " << str << "\n";
