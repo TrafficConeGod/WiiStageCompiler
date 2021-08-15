@@ -16,5 +16,7 @@ extern Type* DoubleType;
 extern Type* Vector2FloatType;
 extern Type* Vector2IntType;
 
+extern Type* StringType;
+extern Type* BoolType;
 
 extern Type* ActorType;

@@ -48,6 +48,14 @@ void StringSave(DataStream& stream, std::string str) {
     stream << '\0';
 }
 
+void BoolSave(DataStream& stream, std::string str) {
+    if (str == "true" || str == "True" || str == "TRUE") {
+        stream << true;
+    } else {
+        stream << false;
+    }
+}
+
 Type* LongType = Type::Create("Long", NumberSave<long>);
 Type* ULongType = Type::Create("ULong", NumberSave<ulong>);
 Type* IntType = Type::Create("Int", NumberSave<int>);
@@ -65,5 +73,6 @@ Type* Vector2IntType = Type::Create("Vector2Int", Vector2Save<int>);
 Type* Vector2UIntType = Type::Create("Vector2UInt", Vector2Save<uint>);
 
 Type* StringType = Type::Create("String", StringSave);
+Type* BoolType = Type::Create("Bool", BoolSave);
 
 Type* ActorType = Type::Create("Actor", ActorSave);
