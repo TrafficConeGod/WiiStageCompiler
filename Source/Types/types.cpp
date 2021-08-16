@@ -4,11 +4,12 @@
 
 template<typename T>
 void NumberSave(DataStream& stream, std::string str) {
-    T num = 0;
+    size_t num = 0;
     std::stringstream stringStream;
     stringStream << str;
     stringStream >> num;
-    stream << num;
+    T numSave = num;
+    stream << numSave;
 }
 
 template<typename T>
