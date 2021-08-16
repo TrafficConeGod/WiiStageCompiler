@@ -10,6 +10,7 @@ class UserType {
         std::map<std::string, Property*> properties;
 
         void CreateEnumProperty(Property* property, std::string section);
+        void CreateArrayProperty(Property* property, std::string typeName, std::string propertyName);
     public:
         std::string name;
         size_t id = 0;

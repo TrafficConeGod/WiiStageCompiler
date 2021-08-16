@@ -46,6 +46,48 @@ void UserType::CreateEnumProperty(Property* property, std::string section) {
     properties[name] = property;
 }
 
+void UserType::CreateArrayProperty(Property* property, std::string typeName, std::string propertyName) {
+    if (!types.count(typeName)) {
+        std::cout << "Invalid type: " << typeName << "\n";
+        exit(0);
+    }
+    Type* templateType = types[typeName];
+    Type* type = new Type;
+    type->Save = [templateType](DataStream& stream, std::string str) {
+        if (!str.size()) {
+            uint size = 0;
+            stream << size;
+            return;
+        }
+        std::vector<std::string> subStrs;
+        size_t subStrStartPos = 0;
+        for (size_t i = 0; i < str.size(); i++) {
+            char ch = str[i];
+            if (ch == ' ') {
+                subStrStartPos++;
+            } else if (ch == ',') {
+                str[i] = '\0';
+                const char* subStr = &str[subStrStartPos];
+                subStrs.push_back(subStr);
+                str[i] = ',';
+
+                subStrStartPos = i + 1;
+            }
+        }
+        const char* subStr = &str[subStrStartPos];
+        subStrs.push_back(subStr);
+
+        uint size = subStrs.size();
+        stream << size;
+        for (std::string subStr : subStrs) {
+            templateType->Save(stream, subStr);
+        }
+    };
+    property->type = type;
+
+    properties[propertyName] = property;
+}
+
 UserType::UserType(size_t _id, std::map<std::string, UserType*>& userTypes, const std::vector<std::string>& line) : id{_id}, name{line.at(0)} {
     std::string parentUserTypesSection(line.at(1));
     if (parentUserTypesSection.size()) {
@@ -101,6 +143,13 @@ UserType::UserType(size_t _id, std::map<std::string, UserType*>& userTypes, cons
 
                     const char* name = &section.at(j + 1);
                     properties[name] = property;
+                    break;
+                } else if (ch == '[') {
+                    section[j] = '\0';
+                    std::string typeName(&section[0]);
+                    section[j] = '[';
+                    std::string propertyName(&section.at(j + 3));
+                    CreateArrayProperty(property, typeName, propertyName);
                     break;
                 }
             }

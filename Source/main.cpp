@@ -82,7 +82,7 @@ int main(int argCount, char** args) {
             if (propertyName.size()) {
                 Property* property = userType->GetProperty(propertyName);
                 if (property == nullptr) {
-                    std::cout << "Invalid property " << propertyName << "\n";
+                    std::cout << "Invalid property " << propertyName << " on line " << (i + 1) << "\n";
                     return 1;
                 }
 
