@@ -1,7 +1,7 @@
 #include "DataStream.h"
 #include <iostream>
 
-#define USING_BIG_ENDIAN
+// #define USING_BIG_ENDIAN
 
 template<typename T>
 T* DataStream::PtrAtPos() {
@@ -21,7 +21,7 @@ DataStream& DataStream::operator<<(const T& val) {
         writeBuf[(sizeof(T) - 1) - i] = readBuf[i];
     }
     //
-    #elif
+    #else
     *ptr = val;
     #endif
     pos += sizeof(T);
