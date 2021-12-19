@@ -42,8 +42,13 @@ int main(int argCount, char** args) {
     DataStream stageOutputStream;
 
     size_t index = 0;
+    size_t lineIndex = 0;
     for (auto line : stageLines) {
+        lineIndex++;
         std::string name(line.at(0));
+        if (!name.size()) {
+            continue;
+        }
         std::string userTypeName;
         size_t colonPos = 0;
         for (size_t i = 0; i < name.size(); i++) {
@@ -82,7 +87,7 @@ int main(int argCount, char** args) {
             if (propertyName.size()) {
                 Property* property = userType->GetProperty(propertyName);
                 if (property == nullptr) {
-                    std::cout << "Invalid property " << propertyName << " on line " << (i + 1) << "\n";
+                    std::cout << "Invalid property " << propertyName << " on line " << lineIndex << "\n";
                     return 1;
                 }
 
