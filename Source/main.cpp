@@ -96,18 +96,27 @@ int main(int argCount, char** args) {
             }
         }
 
-        std::sort(propertyValues.begin(), propertyValues.end(), [](const PropertyValue& a, const PropertyValue& b) {
-            return a.property->id < b.property->id;
-        });
-        
-        for (size_t i = 0; i < propertyValues.size(); i++) {
-            const PropertyValue& propertyValue = propertyValues[i];
-            if (propertyValue.property->id != i) {
-                std::cout << "Missing property with id " << propertyValue.property->id << " and value " << propertyValue.value << "\n";
-                return 1;
-            }
-            propertyValue.property->type->Save(stageOutputStream, propertyValue.value);
+        std::map<std::size_t, std::string> valuesMap;
+
+        for (auto& propertyValue : propertyValues) {
+            valuesMap[propertyValue.property->id] = propertyValue.value;
         }
+ 
+        auto userTypeProperties = userType->GetProperties();
+
+        std::sort(userTypeProperties.begin(), userTypeProperties.end(), [](const Property* a, const Property* b) {
+            return a->id < b->id;
+        });
+
+        for (auto property : userTypeProperties) {
+            if (valuesMap.count(property->id)) {
+                const std::string& value = valuesMap.at(property->id);
+                property->type->Save(stageOutputStream, value);
+            } else {
+                property->type->Save(stageOutputStream, property->defaultValue);
+            }
+        }
+        
         index++;
     }
 

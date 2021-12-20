@@ -10,7 +10,7 @@ class UserType {
         std::map<std::string, Property*> properties;
 
         void CreateEnumProperty(Property* property, std::string section);
-        void CreateArrayProperty(Property* property, std::string typeName, std::string propertyName);
+        void CreateArrayProperty(Property* property, std::string typeName);
     public:
         std::string name;
         size_t id = 0;
@@ -19,6 +19,7 @@ class UserType {
 
         size_t GetPropertiesSize();
         Property* GetProperty(const std::string& name);
+        std::vector<Property*> GetProperties();
 };
 
 extern std::map<std::string, size_t> labelNames;

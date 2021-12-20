@@ -46,7 +46,7 @@ void UserType::CreateEnumProperty(Property* property, std::string section) {
     properties[name] = property;
 }
 
-void UserType::CreateArrayProperty(Property* property, std::string typeName, std::string propertyName) {
+void UserType::CreateArrayProperty(Property* property, std::string typeName) {
     if (!types.count(typeName)) {
         std::cout << "Invalid type: " << typeName << "\n";
         exit(0);
@@ -84,8 +84,6 @@ void UserType::CreateArrayProperty(Property* property, std::string typeName, std
         }
     };
     property->type = type;
-
-    properties[propertyName] = property;
 }
 
 UserType::UserType(size_t _id, std::map<std::string, UserType*>& userTypes, const std::vector<std::string>& line) : id{_id}, name{line.at(0)} {
@@ -140,16 +138,46 @@ UserType::UserType(size_t _id, std::map<std::string, UserType*>& userTypes, cons
                     }
                     property->type = types[typeName];
                     section[j] = ' ';
-
-                    const char* name = &section.at(j + 1);
-                    properties[name] = property;
+                    
+                    bool foundDefault = false;
+                    for (auto k = j + 1; k < section.size(); k++) {
+                        if (section[k] == ' ') {
+                            section[k] = '\0';
+                            property->defaultValue = &section.at(k + 1);
+                            std::string propertyName = &section.at(j + 1);
+                            properties[propertyName] = property;
+                            foundDefault = true;
+                            break;
+                        }
+                    }
+                    if (!foundDefault) {
+                        std::string propertyName = &section.at(j + 1);
+                        properties[propertyName] = property;
+                    }
                     break;
                 } else if (ch == '[') {
                     section[j] = '\0';
                     std::string typeName(&section[0]);
                     section[j] = '[';
-                    std::string propertyName(&section.at(j + 3));
-                    CreateArrayProperty(property, typeName, propertyName);
+                    CreateArrayProperty(property, typeName);
+
+                    bool foundDefault = false;
+                    for (auto k = j + 3; k < section.size(); k++) {
+                        if (section[k] == ' ') {
+                            section[k] = '\0';
+                            property->defaultValue = &section.at(k + 1);
+                            std::string propertyName = &section.at(j + 3);
+                            properties[propertyName] = property;
+                            foundDefault = true;
+                            break;
+                        }
+                    }
+                    if (!foundDefault) {
+                        std::string propertyName = &section.at(j + 3);
+                        properties[propertyName] = property;
+                    }
+                    break;
+
                     break;
                 }
             }
@@ -173,4 +201,16 @@ Property* UserType::GetProperty(const std::string& name) {
         }
     }
     return nullptr;
+}
+
+std::vector<Property*> UserType::GetProperties() {
+    std::vector<Property*> result;
+    for (auto [_, property] : properties) {
+        result.push_back(property);
+    }
+    for (auto userType : parentUserTypes) {
+        auto parentProperties = userType->GetProperties();
+        result.insert(result.end(), parentProperties.begin(), parentProperties.end());
+    }
+    return result;
 }
